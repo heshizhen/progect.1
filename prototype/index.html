@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ONCE (一晤) — PROJECT ONCE 五核心页面高保真交互原型 & 品牌规范</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            once: {
+              canvas: '#0B0D13',
+              surface: '#121621',
+              elevated: '#1A2030',
+              border: '#232B3E',
+              primary: '#F3F4F6',
+              secondary: '#9CA3AF',
+              muted: '#6B7280',
+              accent: '#818CF8',
+              accentHover: '#6366F1',
+              calm: '#34D399',
+              warn: '#FBBF24',
+              critical: '#F87171',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans SC', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #0B0D13;
+      color: #F3F4F6;
+      font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .tabular-timer {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    @keyframes pulseRing {
+      0%, 100% { transform: scale(1); opacity: 0.55; }
+      50% { transform: scale(1.08); opacity: 0.9; }
+    }
+    .eclipse-ring {
+      animation: pulseRing 3.6s ease-in-out infinite;
+    }
+    @keyframes waveBar {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-active span {
+      animation: waveBar 0.9s ease-in-out infinite;
+    }
+    .wave-active span:nth-child(2) { animation-delay: 0.15s; }
+    .wave-active span:nth-child(3) { animation-delay: 0.3s; }
+    .wave-active span:nth-child(4) { animation-delay: 0.45s; }
+    .wave-active span:nth-child(5) { animation-delay: 0.2s; }
+    .wave-active span:nth-child(6) { animation-delay: 0.35s; }
+  </style>
+</head>
+<body class="min-h-screen bg-once-canvas text-once-primary flex flex-col selection:bg-once-accent/30 selection:text-white">
+
+  <!-- 顶部原型检视导航栏（方便快速切换 5 个核心页面 + 品牌规范面板） -->
+  <header class="sticky top-0 z-30 bg-once-surface/95 backdrop-blur border-b border-once-border px-3 py-2.5">
+    <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-once-accent/15 border border-once-accent/40 text-once-accent text-xs font-mono font-semibold">◯</span>
+        <span class="font-semibold tracking-tight text-sm text-once-primary">PROJECT ONCE</span>
+        <span class="text-xs px-2 py-0.5 rounded-full bg-once-elevated border border-once-border text-once-secondary">Day 1 原型与品牌规范</span>
+      </div>
+
+      <!-- 页面快速跳转 Tabs -->
+      <nav aria-label="原型页面切换" class="flex flex-wrap items-center gap-1">
+        <button type="button" data-nav="landing" class="nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors bg-once-accent text-slate-950 font-semibold">
+          1. 首页
+        </button>
+        <button type="button" data-nav="matching" class="nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors text-once-secondary hover:text-once-primary hover:bg-once-elevated">
+          2. 匹配页
+        </button>
+        <button type="button" data-nav="chat" class="nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors text-once-secondary hover:text-once-primary hover:bg-once-elevated">
+          3. 聊天页
+        </button>
+        <button type="button" data-nav="farewell" class="nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors text-once-secondary hover:text-once-primary hover:bg-once-elevated">
+          4. 告别页
+        </button>
+        <button type="button" data-nav="safety" class="nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors text-once-secondary hover:text-once-primary hover:bg-once-elevated">
+          5. 设置/安全
+        </button>
+        <button type="button" data-nav="brand" class="nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors text-once-secondary hover:text-once-primary hover:bg-once-elevated">
+          规范 & Tokens
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 主视口：左侧/中央为手机端单栏沉浸式容器，右侧为当前页面的设计规格与安全边界注释 -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- 左侧：应用核心交互容器（模拟 440px 最大宽度单栏 Web MVP 视口） -->
+    <section class="lg:col-span-7 flex flex-col items-center w-full">
+      <div class="w-full max-w-md bg-once-surface border border-once-border rounded-2xl shadow-2xl overflow-hidden flex flex-col min-h-[640px] relative">
+
+        <!-- 应用内顶部状态栏 -->
+        <div class="px-5 py-3.5 border-b border-once-border flex items-center justify-between bg-once-surface/90">
+          <button type="button" id="appLogoBtn" class="flex items-center gap-2 text-left group">
+            <span class="w-4 h-4 rounded-full border-2 border-once-accent inline-block relative">
+              <span class="w-1.5 h-1.5 rounded-full bg-once-accent absolute top-0.5 right-0.5"></span>
+            </span>
+            <span class="font-semibold tracking-wider text-sm text-once-primary group-hover:text-once-accent transition-colors">ONCE</span>
+            <span class="text-[11px] text-once-muted font-mono">一晤</span>
+          </button>
+
+          <div class="flex items-center gap-2">
+            <span id="anonBadge" class="text-[11px] font-mono text-once-secondary bg-once-elevated px-2 py-0.5 rounded border border-once-border">
+              ID: once_8f3a
+            </span>
+            <button type="button" id="openSafetyBtn" class="text-xs text-once-secondary hover:text-once-primary px-2 py-1 rounded-lg hover:bg-once-elevated transition-colors flex items-center gap-1" title="查看设置与安全说明">
+              <span>安全/设置</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== 页面 1：首页 (Landing) ==================== -->
+        <div id="view-landing" class="app-view flex-1 flex flex-col justify-between p-6">
+          <div class="my-auto flex flex-col items-center text-center">
+            <!-- 日食环品牌符号 -->
+            <div class="relative w-28 h-28 mb-6 flex items-center justify-center">
+              <div class="eclipse-ring absolute inset-0 rounded-full border border-once-accent/40 shadow-[0_0_40px_rgba(129,140,248,0.2)]"></div>
+              <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-once-canvas via-once-surface to-once-accent/30 border border-once-accent/60 flex items-center justify-center">
+                <span class="font-mono text-xs tracking-widest text-once-accent">ONCE</span>
+              </div>
+            </div>
+
+            <h1 class="text-2xl font-semibold tracking-tight text-once-primary mb-2">
+              一期一会，说完即散
+            </h1>
+            <p class="text-sm text-once-secondary max-w-xs leading-relaxed mb-6">
+              无需注册的随机一对一匿名对话。没有个人主页、没有好友与关注，倒计时归零即刻销毁全部文字与语音。
+            </p>
+
+            <!-- 时长选择器 5/10/20/30 分钟 -->
+            <div class="w-full mb-6">
+              <div class="flex items-center justify-between text-xs text-once-secondary mb-2 px-1">
+                <span>选择本次对话时长</span>
+                <span class="font-mono text-once-accent" id="durationHintText">默认 10 分钟</span>
+              </div>
+              <div class="grid grid-cols-4 gap-2" role="radiogroup" aria-label="选择对话时长">
+                <button type="button" data-duration="5" class="duration-btn py-2.5 px-2 rounded-xl text-xs font-mono border border-once-border bg-once-elevated/60 text-once-secondary hover:text-once-primary transition-all">
+                  5 分钟
+                </button>
+                <button type="button" data-duration="10" class="duration-btn py-2.5 px-2 rounded-xl text-xs font-mono border border-once-accent bg-once-accent/15 text-once-primary font-semibold shadow-sm transition-all">
+                  10 分钟
+                </button>
+                <button type="button" data-duration="20" class="duration-btn py-2.5 px-2 rounded-xl text-xs font-mono border border-once-border bg-once-elevated/60 text-once-secondary hover:text-once-primary transition-all">
+                  20 分钟
+                </button>
+                <button type="button" data-duration="30" class="duration-btn py-2.5 px-2 rounded-xl text-xs font-mono border border-once-border bg-once-elevated/60 text-once-secondary hover:text-once-primary transition-all">
+                  30 分钟
+                </button>
+              </div>
+            </div>
+
+            <!-- 开始匹配主 CTA -->
+            <button type="button" id="startMatchBtn" class="w-full py-3.5 px-5 rounded-xl bg-once-accent hover:bg-once-accentHover text-slate-950 font-semibold text-sm transition-all shadow-lg shadow-once-accent/15 flex items-center justify-center gap-2">
+              <span id="startMatchBtnText">开始随机匹配（10 分钟）</span>
+            </button>
+          </div>
+
+          <!-- 底部诚实技术边界声明 -->
+          <div class="pt-4 border-t border-once-border/70 text-left">
+            <div class="flex items-start gap-2 text-xs text-once-secondary leading-relaxed">
+              <span class="text-once-calm font-mono mt-0.5">●</span>
+              <p>
+                <strong class="text-once-primary font-medium">同一匿名身份永久排除再次匹配：</strong>系统通过服务端加密凭证确保同一匿名身份绝不重逢；但无注册机制<span class="text-once-warn">无法跨设备、跨浏览器或清除数据后识别同一自然人</span>。
+                <button type="button" id="landingSafetyLink" class="underline text-once-accent hover:text-once-primary ml-1">了解安全边界</button>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 页面 2：匹配页 (Matching) ==================== -->
+        <div id="view-matching" class="app-view hidden flex-1 flex flex-col justify-between p-6">
+          <div class="my-auto flex flex-col items-center text-center">
+            <!-- 呼吸等待动画 -->
+            <div class="relative w-36 h-36 mb-6 flex items-center justify-center">
+              <div class="eclipse-ring absolute inset-0 rounded-full border border-once-accent/30"></div>
+              <div class="eclipse-ring absolute inset-4 rounded-full border border-once-accent/50" style="animation-delay: 0.8s"></div>
+              <div class="w-20 h-20 rounded-full bg-once-elevated border border-once-border flex flex-col items-center justify-center">
+                <span class="text-[10px] text-once-muted uppercase tracking-wider">Wait</span>
+                <span id="matchWaitTimer" class="tabular-timer text-lg font-semibold text-once-accent">00:03</span>
+              </div>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-once-elevated border border-once-border text-xs font-mono text-once-secondary mb-3">
+              <span class="w-2 h-2 rounded-full bg-once-calm animate-pulse"></span>
+              <span id="matchingPoolBadge">10 分钟对话池 · 文字 + 语音</span>
+            </div>
+
+            <h2 class="text-lg font-semibold text-once-primary mb-2">
+              正在寻找此刻同频的陌生人…
+            </h2>
+            <p id="matchingStatusText" class="text-xs text-once-secondary max-w-xs leading-relaxed mb-6">
+              服务端正在通过事务锁（FOR UPDATE SKIP LOCKED）检索候选人，并自动过滤你已永久排除的 <span id="excludedCountInline" class="font-mono text-once-primary">12</span> 个历史匿名身份。
+            </p>
+
+            <!-- 原型演示快捷触发按钮 -->
+            <div class="w-full p-3 rounded-xl bg-once-canvas/80 border border-once-border mb-4 text-left">
+              <div class="text-[11px] font-mono text-once-muted mb-2">原型交互演示控制（模拟服务端推送）：</div>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="simMatchSuccessBtn" class="flex-1 py-2 px-3 rounded-lg bg-once-calm/15 border border-once-calm/40 text-once-calm text-xs font-medium hover:bg-once-calm/25 transition-colors">
+                  模拟配对成功 → 进入聊天室
+                </button>
+                <button type="button" id="simFallbackPromptBtn" class="py-2 px-3 rounded-lg bg-once-elevated border border-once-border text-once-secondary text-xs hover:text-once-primary transition-colors">
+                  模拟超时回退提示
+                </button>
+              </div>
+            </div>
+
+            <!-- 超时回退提示卡片（默认隐藏） -->
+            <div id="fallbackCard" class="hidden w-full p-3.5 rounded-xl bg-once-warn/10 border border-once-warn/30 text-left mb-4">
+              <p class="text-xs text-once-primary font-medium mb-1">当前时长池等待较久</p>
+              <p class="text-xs text-once-secondary mb-2.5">是否愿意切换至人数最多的默认 10 分钟对话池？</p>
+              <div class="flex gap-2">
+                <button type="button" id="acceptFallbackBtn" class="px-3 py-1.5 rounded-lg bg-once-warn text-slate-950 font-semibold text-xs">
+                  切换至 10 分钟池
+                </button>
+                <button type="button" id="dismissFallbackBtn" class="px-3 py-1.5 rounded-lg bg-once-elevated text-once-secondary text-xs">
+                  继续等待
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" id="cancelMatchBtn" class="w-full py-3 rounded-xl border border-once-border bg-once-elevated/60 hover:bg-once-elevated text-once-secondary hover:text-once-primary text-xs font-medium transition-colors">
+            取消匹配并返回首页
+          </button>
+        </div>
+
+        <!-- ==================== 页面 3：聊天页 (Chat Room) ==================== -->
+        <div id="view-chat" class="app-view hidden flex-1 flex flex-col h-full">
+          <!-- 聊天室顶部状态与权威倒计时栏 -->
+          <div class="px-4 py-2.5 bg-once-canvas/90 border-b border-once-border flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-once-calm" title="对方在线"></span>
+              <div>
+                <div class="text-xs font-medium text-once-primary font-mono">Stranger #7C2</div>
+                <div class="text-[10px] text-once-muted">配对已锁定 · 永不重逢保护已生效</div>
+              </div>
+            </div>
+
+            <!-- 服务端权威倒计时显示 -->
+            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-once-surface border border-once-border" title="基于服务端 expires_at 权威时间戳同步">
+              <span id="timerDot" class="w-1.5 h-1.5 rounded-full bg-once-calm"></span>
+              <span id="chatCountdown" class="tabular-timer text-sm font-semibold text-once-calm">09:42</span>
+            </div>
+
+            <!-- 举报与提前离开 -->
+            <div class="flex items-center gap-1">
+              <button type="button" id="openReportModalBtn" class="px-2 py-1 rounded-lg text-xs text-once-critical hover:bg-once-critical/15 transition-colors">
+                举报/屏蔽
+              </button>
+              <button type="button" id="leaveChatBtn" class="px-2 py-1 rounded-lg text-xs text-once-secondary hover:text-once-primary hover:bg-once-elevated transition-colors">
+                离开
+              </button>
+            </div>
+          </div>
+
+          <!-- 原型倒计时状态快速测试条 -->
+          <div class="px-3 py-1.5 bg-once-elevated/50 border-b border-once-border flex items-center justify-between text-[11px] text-once-secondary">
+            <span>模拟倒计时阶段：</span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" data-simtime="582" class="sim-time-btn px-2 py-0.5 rounded bg-once-surface border border-once-border hover:text-once-primary font-mono">正常 09:42</button>
+              <button type="button" data-simtime="55" class="sim-time-btn px-2 py-0.5 rounded bg-once-surface border border-once-warn/40 text-once-warn font-mono">预警 00:55</button>
+              <button type="button" data-simtime="12" class="sim-time-btn px-2 py-0.5 rounded bg-once-surface border border-once-critical/40 text-once-critical font-mono">临别 00:12</button>
+              <button type="button" data-simtime="0" class="sim-time-btn px-2 py-0.5 rounded bg-once-critical/20 border border-once-critical/50 text-once-critical font-medium">立即到期</button>
+            </div>
+          </div>
+
+          <!-- 最后 60 秒临别提醒横幅（动态显示） -->
+          <div id="lastMinuteBanner" class="hidden px-4 py-2 bg-once-warn/15 border-b border-once-warn/30 text-xs text-once-warn flex items-center justify-between">
+            <span>⏳ 对话将在 60 秒内永久消散，珍惜最后几句话。</span>
+            <span class="font-mono text-[11px]">不可延时</span>
+          </div>
+
+          <!-- 消息流区域 -->
+          <div id="chatMessageList" class="flex-1 p-4 space-y-3 overflow-y-auto max-h-[380px]">
+            <!-- 系统置顶提示 -->
+            <div class="text-center my-1">
+              <span class="inline-block px-3 py-1 rounded-full bg-once-canvas border border-once-border text-[11px] text-once-muted">
+                🔒 端到端临时房间已建立 · 倒计时结束后全部文字与语音将物理删除
+              </span>
+            </div>
+
+            <!-- 对方文字消息 -->
+            <div class="flex flex-col items-start max-w-[82%]">
+              <div class="px-3.5 py-2.5 rounded-2xl rounded-bl-sm bg-once-canvas border border-once-border text-sm text-once-primary leading-relaxed">
+                嗨，没想到这么快匹配上了。今晚刚好想找个完全不认识的人聊几句，不用担心明天还要维持关系。
+              </div>
+              <span class="text-[10px] font-mono text-once-muted mt-1 ml-1">Stranger #7C2 · 刚刚</span>
+            </div>
+
+            <!-- 对方语音消息 -->
+            <div class="flex flex-col items-start max-w-[82%]">
+              <div class="px-3.5 py-2.5 rounded-2xl rounded-bl-sm bg-once-canvas border border-once-border flex items-center gap-3">
+                <button type="button" data-voice-id="v1" class="voice-play-btn w-8 h-8 rounded-full bg-once-accent/20 border border-once-accent/50 text-once-accent flex items-center justify-center text-xs font-mono">
+                  ▶
+                </button>
+                <div id="wave-v1" class="flex items-center gap-1 h-4">
+                  <span class="w-1 h-2 bg-once-accent/70 rounded-full"></span>
+                  <span class="w-1 h-3.5 bg-once-accent/70 rounded-full"></span>
+                  <span class="w-1 h-4 bg-once-accent/70 rounded-full"></span>
+                  <span class="w-1 h-2.5 bg-once-accent/70 rounded-full"></span>
+                  <span class="w-1 h-3.5 bg-once-accent/70 rounded-full"></span>
+                  <span class="w-1 h-2 bg-once-accent/70 rounded-full"></span>
+                </div>
+                <span class="text-xs font-mono text-once-secondary">0:08</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-once-surface text-once-muted font-mono">Signed URL</span>
+              </div>
+              <span class="text-[10px] font-mono text-once-muted mt-1 ml-1">语音消息 · 阅后随房间销毁</span>
+            </div>
+
+            <!-- 我方文字消息 -->
+            <div class="flex flex-col items-end ml-auto max-w-[82%]">
+              <div class="px-3.5 py-2.5 rounded-2xl rounded-br-sm bg-once-accent/20 border border-once-accent/40 text-sm text-once-primary leading-relaxed">
+                同感，只有 10 分钟反而让人能卸下防备说真话。你那边现在也是深夜吗？
+              </div>
+              <span class="text-[10px] font-mono text-once-muted mt-1 mr-1">你 · 刚刚</span>
+            </div>
+          </div>
+
+          <!-- 底部输入与语音录制栏 -->
+          <div class="p-3 bg-once-surface border-t border-once-border">
+            <!-- 录音状态条（默认隐藏） -->
+            <div id="voiceRecordBar" class="hidden mb-2 px-3 py-2 rounded-xl bg-once-elevated border border-once-accent/40 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-once-critical animate-ping"></span>
+                <span class="text-xs text-once-primary">正在录制语音…</span>
+                <span id="recordSeconds" class="tabular-timer text-xs text-once-accent font-mono">0:03 / 0:60</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" id="cancelRecordBtn" class="px-2.5 py-1 rounded-lg bg-once-surface text-once-secondary text-xs hover:text-once-primary">
+                  取消
+                </button>
+                <button type="button" id="sendVoiceBtn" class="px-2.5 py-1 rounded-lg bg-once-accent text-slate-950 font-semibold text-xs">
+                  发送语音
+                </button>
+              </div>
+            </div>
+
+            <form id="chatForm" class="flex items-center gap-2">
+              <button type="button" id="toggleVoiceRecordBtn" class="p-2.5 rounded-xl bg-once-elevated border border-once-border text-once-secondary hover:text-once-accent transition-colors text-xs font-mono" title="录制语音消息（最长 60 秒）">
+                🎙️ 语音
+              </button>
+              <input
+                id="chatInput"
+                type="text"
+                maxlength="500"
+                placeholder="输入消息（回车发送，外链将纯文本化）…"
+                class="flex-1 bg-once-canvas border border-once-border rounded-xl px-3.5 py-2.5 text-sm text-once-primary placeholder:text-once-muted focus:outline-none focus:border-once-accent"
+              />
+              <button type="submit" class="px-4 py-2.5 rounded-xl bg-once-accent hover:bg-once-accentHover text-slate-950 font-semibold text-xs transition-colors">
+                发送
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ==================== 页面 4：告别页 (Farewell) ==================== -->
+        <div id="view-farewell" class="app-view hidden flex-1 flex flex-col justify-between p-6">
+          <div class="my-auto flex flex-col items-center text-center">
+            <div class="w-20 h-20 rounded-full bg-once-elevated border border-once-border flex items-center justify-center mb-5">
+              <span class="text-2xl text-once-secondary font-mono">◌</span>
+            </div>
+
+            <span id="farewellBadge" class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-once-elevated border border-once-border text-once-secondary mb-2">
+              SESSION DISSOLVED
+            </span>
+            <h2 id="farewellTitle" class="text-xl font-semibold text-once-primary mb-2">
+              10 分钟已尽，这段对话已随风消散
+            </h2>
+            <p id="farewellSubtitle" class="text-xs text-once-secondary max-w-xs leading-relaxed mb-6">
+              感谢这一刻的坦诚交汇。按照 ONCE 的规则，你们不留联系方式，也不会再次相遇。
+            </p>
+
+            <!-- 销毁与防重确认卡片 -->
+            <div class="w-full p-4 rounded-2xl bg-once-canvas border border-once-border text-left space-y-2.5 mb-6">
+              <div class="text-xs font-medium text-once-primary mb-1">服务端清理与安全执行回执：</div>
+              <div class="flex items-start gap-2 text-xs text-once-secondary">
+                <span class="text-once-calm font-mono">✓</span>
+                <span id="farewellReceipt1">房间内全部文字记录与语音文件已从活动库清除</span>
+              </div>
+              <div class="flex items-start gap-2 text-xs text-once-secondary">
+                <span class="text-once-calm font-mono">✓</span>
+                <span>私有 Storage 语音短期签名链接（Signed URL）已立即失效</span>
+              </div>
+              <div class="flex items-start gap-2 text-xs text-once-secondary">
+                <span class="text-once-calm font-mono">✓</span>
+                <span>双方匿名身份已写入 <code class="text-once-accent font-mono">pair_exclusions</code>，永久排除再次匹配</span>
+              </div>
+            </div>
+
+            <button type="button" id="newEncounterBtn" class="w-full py-3.5 px-5 rounded-xl bg-once-accent hover:bg-once-accentHover text-slate-950 font-semibold text-sm transition-all">
+              开启新的相遇（返回首页）
+            </button>
+          </div>
+
+          <div class="pt-4 border-t border-once-border/70 text-center">
+            <button type="button" id="farewellToSafetyBtn" class="text-xs text-once-secondary hover:text-once-primary underline">
+              查看匿名身份排重边界与举报证据保留政策
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== 页面 5：设置与安全说明页 (Safety & Settings) ==================== -->
+        <div id="view-safety" class="app-view hidden flex-1 flex flex-col justify-between p-5 overflow-y-auto">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-base font-semibold text-once-primary">设置与安全边界说明</h2>
+              <button type="button" id="backToLandingFromSafetyBtn" class="text-xs text-once-accent hover:underline">
+                返回首页
+              </button>
+            </div>
+
+            <!-- 1. 诚实边界置顶说明卡片 -->
+            <div class="p-3.5 rounded-xl bg-once-warn/10 border border-once-warn/30 space-y-1.5">
+              <div class="text-xs font-semibold text-once-warn flex items-center gap-1.5">
+                <span>⚠️</span>
+                <span>重要声明：匿名身份 ≠ 自然人跨设备识别</span>
+              </div>
+              <p class="text-xs text-once-secondary leading-relaxed">
+                为了保护隐私，ONCE 不收集手机号、邮箱、实名信息或侵入式硬件指纹。服务端永久排重基于<strong class="text-once-primary">当前浏览器/设备的加密匿名凭证（Identity ID）</strong>。若你或对方更换设备、切换浏览器、使用无痕窗口或重置凭证，系统无法识别为同一自然人，因此不承诺跨设备的绝对排重。
+              </p>
+            </div>
+
+            <!-- 2. 当前匿名身份凭证管理 -->
+            <div class="p-3.5 rounded-xl bg-once-canvas border border-once-border space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-once-primary">当前匿名身份凭证</span>
+                <span class="text-[11px] font-mono text-once-calm bg-once-calm/10 px-2 py-0.5 rounded">HttpOnly 保护中</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="p-2 rounded-lg bg-once-surface border border-once-border">
+                  <div class="text-[10px] text-once-muted">匿名凭证摘要</div>
+                  <div id="safetyAnonIdText" class="font-mono text-once-primary mt-0.5">once_8f3a...c91e</div>
+                </div>
+                <div class="p-2 rounded-lg bg-once-surface border border-once-border">
+                  <div class="text-[10px] text-once-muted">已永久排除历史对象</div>
+                  <div id="safetyExcludedCount" class="font-mono text-once-accent mt-0.5">12 人</div>
+                </div>
+              </div>
+              <div class="pt-1 flex items-center justify-between gap-2">
+                <span class="text-[11px] text-once-muted">重置后既有不重复排除记录将失效（24h 限 1 次）</span>
+                <button type="button" id="resetIdentityBtn" class="px-2.5 py-1.5 rounded-lg border border-once-critical/40 text-once-critical hover:bg-once-critical/15 text-xs font-medium transition-colors shrink-0">
+                  重置凭证
+                </button>
+              </div>
+              <div id="resetConfirmBanner" class="hidden p-2.5 rounded-lg bg-once-critical/15 border border-once-critical/40 text-xs space-y-2">
+                <p class="text-once-primary">确定重置匿名凭证吗？重置后你将可能再次遇到此前排除过的 12 位陌生人。</p>
+                <div class="flex gap-2">
+                  <button type="button" id="confirmResetIdentityBtn" class="px-2.5 py-1 rounded bg-once-critical text-slate-950 font-semibold">确认重置</button>
+                  <button type="button" id="cancelResetIdentityBtn" class="px-2.5 py-1 rounded bg-once-elevated text-once-secondary">取消</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. 数据销毁与举报证据保留双轨策略 -->
+            <div class="p-3.5 rounded-xl bg-once-canvas border border-once-border space-y-2">
+              <div class="text-xs font-medium text-once-primary">聊天销毁与举报取证保留策略</div>
+              <ul class="text-xs text-once-secondary space-y-1.5 list-disc list-inside leading-relaxed">
+                <li><strong class="text-once-primary">正常结束：</strong>倒计时归零或任一方离开时，服务端立即删除消息记录与 Storage 语音对象，仅保留双方的匿名 ID 排除组合。</li>
+                <li><strong class="text-once-primary">触发举报例外：</strong>若任一方发起违规举报，当前会话最近上下文与涉事语音将转为 <code class="font-mono text-once-warn">under_review</code> 加密冻结状态，仅限安全审核读取，最长保留 14 天后自动物理销毁。</li>
+              </ul>
+            </div>
+
+            <!-- 4. 交互与音频偏好 -->
+            <div class="p-3.5 rounded-xl bg-once-canvas border border-once-border space-y-2.5">
+              <div class="text-xs font-medium text-once-primary">本地偏好设置</div>
+              <label class="flex items-center justify-between text-xs text-once-secondary cursor-pointer">
+                <span>自动播放收到的语音消息（建议关闭防外放）</span>
+                <input type="checkbox" id="prefAutoplayVoice" class="accent-indigo-400 rounded" />
+              </label>
+              <label class="flex items-center justify-between text-xs text-once-secondary cursor-pointer">
+                <span>最后 60 秒倒计时温和提示显示</span>
+                <input type="checkbox" id="prefLastMinuteAlert" checked class="accent-indigo-400 rounded" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 页面内举报与屏蔽模态框 ==================== -->
+        <div id="reportModal" class="hidden absolute inset-0 z-20 bg-once-canvas/85 backdrop-blur-sm flex items-center justify-center p-5">
+          <div class="w-full bg-once-surface border border-once-border rounded-2xl p-5 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-semibold text-once-critical">举报并立即终止对话</h3>
+              <button type="button" id="closeReportModalBtn" class="text-xs text-once-secondary hover:text-once-primary">✕</button>
+            </div>
+            <p class="text-xs text-once-secondary leading-relaxed">
+              提交后将立即关闭房间、永久屏蔽对方，并将本房间聊天与语音加密冻结至安全审核隔离区（最多保留 14 天后物理销毁）。
+            </p>
+            <div class="space-y-2 text-xs">
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-once-canvas border border-once-border cursor-pointer">
+                <input type="radio" name="reportReason" value="骚扰、辱骂或仇恨言论" checked class="accent-rose-400" />
+                <span>骚扰、辱骂或仇恨言论</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-once-canvas border border-once-border cursor-pointer">
+                <input type="radio" name="reportReason" value="色情低俗或违法违规语音/文字" class="accent-rose-400" />
+                <span>色情低俗或违法违规语音/文字</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-once-canvas border border-once-border cursor-pointer">
+                <input type="radio" name="reportReason" value="垃圾广告、外链导流或诈骗诱导" class="accent-rose-400" />
+                <span>垃圾广告、外链导流或诈骗诱导</span>
+              </label>
+            </div>
+            <div class="flex gap-2 pt-1">
+              <button type="button" id="cancelReportBtn" class="flex-1 py-2.5 rounded-xl bg-once-elevated text-once-secondary text-xs font-medium">
+                取消
+              </button>
+              <button type="button" id="submitReportBtn" class="flex-1 py-2.5 rounded-xl bg-once-critical text-slate-950 font-semibold text-xs">
+                确认举报并离开
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 右侧：当前页面的设计规格、安全设计要点与品牌 Token 检视器 -->
+    <aside class="lg:col-span-5 space-y-4">
+      <!-- 动态规格说明卡片 -->
+      <div class="bg-once-surface border border-once-border rounded-2xl p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <span id="specPageBadge" class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-once-accent/15 text-once-accent border border-once-accent/30">
+            PAGE 01 / 首页规格
+          </span>
+          <span class="text-xs text-once-muted font-mono">Figma: 390×844 / 1440×900</span>
+        </div>
+        <h3 id="specPageTitle" class="text-base font-semibold text-once-primary">
+          首页（Landing & Duration Selector）
+        </h3>
+        <p id="specPageDesc" class="text-xs text-once-secondary leading-relaxed">
+          零注册阻力入口。默认选中 10 分钟，支持 5/10/20/30 分钟四档切换。在首屏底部显著披露“同一匿名身份永不重复匹配，但无法跨设备识别同一自然人”。
+        </p>
+        <div class="pt-2 border-t border-once-border space-y-2">
+          <div class="text-xs font-medium text-once-primary">安全与架构约束（MVP 必达）：</div>
+          <ul id="specSecurityList" class="text-xs text-once-secondary space-y-1.5 list-disc list-inside leading-relaxed">
+            <li>匿名身份通过服务端 <code class="font-mono text-once-accent">HttpOnly</code> 凭证或 Supabase Anonymous Auth 初始化，禁止客户端伪造 ID。</li>
+            <li>不展示在线人数、不提供历史入口、不设个人资料编辑。</li>
+            <li>时长参数提交至服务端匹配队列 RPC 并校验合法枚举值（5/10/20/30）。</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 品牌规范与 Design Tokens 面板 -->
+      <div id="brandTokenPanel" class="bg-once-surface border border-once-border rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-once-primary">品牌规范：ONCE（一晤）色彩与字体 Tokens</h3>
+          <span class="text-[11px] font-mono text-once-muted">Nocturnal Calm</span>
+        </div>
+
+        <!-- 色板网格 -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+          <div class="p-2.5 rounded-xl bg-once-canvas border border-once-border flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-[#0B0D13] border border-white/20 shrink-0"></span>
+            <div>
+              <div class="font-medium text-once-primary">Canvas</div>
+              <div class="text-[10px] font-mono text-once-muted">#0B0D13</div>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-once-canvas border border-once-border flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-[#121621] border border-white/20 shrink-0"></span>
+            <div>
+              <div class="font-medium text-once-primary">Surface</div>
+              <div class="text-[10px] font-mono text-once-muted">#121621</div>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-once-canvas border border-once-border flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-[#818CF8] shrink-0"></span>
+            <div>
+              <div class="font-medium text-once-primary">Accent</div>
+              <div class="text-[10px] font-mono text-once-muted">#818CF8</div>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-once-canvas border border-once-border flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-[#34D399] shrink-0"></span>
+            <div>
+              <div class="font-medium text-once-primary">Calm (&gt;60s)</div>
+              <div class="text-[10px] font-mono text-once-muted">#34D399</div>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-once-canvas border border-once-border flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-[#FBBF24] shrink-0"></span>
+            <div>
+              <div class="font-medium text-once-primary">Warn (≤60s)</div>
+              <div class="text-[10px] font-mono text-once-muted">#FBBF24</div>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-once-canvas border border-once-border flex items-center gap-2">
+            <span class="w-5 h-5 rounded-lg bg-[#F87171] shrink-0"></span>
+            <div>
+              <div class="font-medium text-once-primary">Critical (≤15s)</div>
+              <div class="text-[10px] font-mono text-once-muted">#F87171</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 研发推进路线图概览 -->
+        <div class="pt-3 border-t border-once-border space-y-2">
+          <div class="text-xs font-medium text-once-primary">MVP 阶段推进路线图（每次执行聚焦 1 个里程碑）：</div>
+          <div class="space-y-1.5 text-xs">
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-once-accent/15 border border-once-accent/40 text-once-primary">
+              <span>Day 1：产品命名、品牌规范与五核心页面交互原型</span>
+              <span class="font-mono text-[11px] text-once-accent">本次已交付 ✓</span>
+            </div>
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-once-canvas border border-once-border text-once-secondary">
+              <span>Day 2：Next.js + TS + Tailwind 项目脚手架与全局路由骨架</span>
+              <span class="font-mono text-[11px]">下一步待执行</span>
+            </div>
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-once-canvas border border-once-border text-once-muted">
+              <span>Day 3：Supabase 数据库 Schema、RLS、永久排除表与匹配事务 RPC</span>
+              <span class="font-mono text-[11px]">规划中</span>
+            </div>
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-once-canvas border border-once-border text-once-muted">
+              <span>Day 4–7：权威倒计时、Realtime 聊天、私有语音 Storage、举报与清理任务</span>
+              <span class="font-mono text-[11px]">规划中</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // 状态管理
+    const state = {
+      currentView: 'landing',
+      selectedDuration: 10,
+      matchWaitSec: 3,
+      matchTimerId: null,
+      chatRemainingSec: 582,
+      chatTimerId: null,
+      recordingSec: 0,
+      recordTimerId: null,
+      excludedCount: 12,
+      anonShortId: 'once_8f3a',
+      anonFullMask: 'once_8f3a...c91e',
+      playingVoiceId: null
+    };
+
+    const pageSpecs = {
+      landing: {
+        badge: 'PAGE 01 / 首页规格',
+        title: '首页（Landing & Duration Selector）',
+        desc: '零注册阻力入口。默认选中 10 分钟，支持 5/10/20/30 分钟四档切换。在首屏底部显著披露“同一匿名身份永不重复匹配，但无法跨设备识别同一自然人”。',
+        bullets: [
+          '匿名身份通过服务端 HttpOnly 凭证或 Supabase Anonymous Auth 初始化，禁止客户端伪造 ID。',
+          '不展示在线人数、不提供历史入口、不设个人资料编辑。',
+          '时长参数提交至服务端匹配队列 RPC 并校验合法枚举值（5/10/20/30）。'
+        ]
+      },
+      matching: {
+        badge: 'PAGE 02 / 匹配页规格',
+        title: '匹配页（Server-Side Queue & Pairing）',
+        desc: '展示所选时长池与等待秒数。配对由服务端数据库事务执行，自动校验双向永久排除表与屏蔽表。',
+        bullets: [
+          '禁止客户端直接 SELECT 匹配队列，防止枚举在线用户。',
+          '配对成功瞬间在同事务内写入 pair_exclusions(user_low_id, user_high_id)，即使 1 秒后断线也永久不再匹配。',
+          '等待超 20 秒无同档位候选时，提供温和回退至默认 10 分钟池的选项。'
+        ]
+      },
+      chat: {
+        badge: 'PAGE 03 / 聊天页规格',
+        title: '聊天页（Ephemeral 1-on-1 Room）',
+        desc: '支持纯文本与 60 秒内语音消息。顶部展示服务端权威倒计时，最后 60 秒琥珀色提醒，最后 15 秒珊瑚红临别提示。',
+        bullets: [
+          '倒计时以服务端 expires_at 为准，RLS 强制校验 now() < expires_at，客户端改本地系统时间无效。',
+          '语音存入私有 Storage 桶，仅签发有效期不超过房间剩余秒数的 Signed URL。',
+          '外链纯文本化不渲染超链接防钓鱼；支持一键举报并冻结证据。'
+        ]
+      },
+      farewell: {
+        badge: 'PAGE 04 / 告别页规格',
+        title: '告别页（Dissolution & Closure）',
+        desc: '根据自然到期、对方离开、主动离开或举报终止展示对应文案，并给出数据销毁与永久排重回执。',
+        bullets: [
+          '严禁出现“加好友”、“再来一局”或“历史回顾”入口。',
+          '正常结束立即触发服务端消息与语音清理；举报结束则转入 under_review 隔离区。',
+          '唯一主操作为返回首页开启新的随机相遇。'
+        ]
+      },
+      safety: {
+        badge: 'PAGE 05 / 设置与安全说明',
+        title: '设置与安全说明页（Settings & Safety）',
+        desc: '集中披露匿名身份技术边界、正常销毁与举报保留双轨策略、本地凭证重置冷却机制及音频偏好。',
+        bullets: [
+          '明确告知匿名凭证无法跨设备/跨浏览器/清除数据后识别同一自然人。',
+          '重置匿名凭证需二次确认，并附带服务端速率限制（如 24 小时最多 1 次）防止绕过拉黑。',
+          '语音默认关闭自动播放，避免公共场所隐私泄露。'
+        ]
+      },
+      brand: {
+        badge: 'BRAND & TOKENS / 品牌规范',
+        title: 'ONCE（一晤）品牌视觉与研发路线',
+        desc: '采用 Nocturnal Calm 暗色优先主题，倒计时强制使用 JetBrains Mono 等宽数字（tabular-nums），消除秒数跳动。',
+        bullets: [
+          '主背景 #0B0D13 与正文 #F3F4F6 对比度 > 15:1，满足 WCAG AAA 标准。',
+          '状态色语义明确：正常态 #34D399、60 秒预警 #FBBF24、15 秒临别/举报 #F87171。',
+          '可直接复制右侧与规格文档中的 tailwind.config.ts 投入 VS Code 开发。'
+        ]
+      }
+    };
+
+    function formatTime(totalSec) {
+      const s = Math.max(0, Math.floor(totalSec));
+      const mins = String(Math.floor(s / 60)).padStart(2, '0');
+      const secs = String(s % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function switchView(viewName, options = {}) {
+      state.currentView = viewName;
+      const actualView = viewName === 'brand' ? 'landing' : viewName;
+
+      document.querySelectorAll('.app-view').forEach(el => {
+        el.classList.add('hidden');
+      });
+      const targetEl = document.getElementById(`view-${actualView}`);
+      if (targetEl) targetEl.classList.remove('hidden');
+
+      // 更新顶部导航高亮
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        if (btn.dataset.nav === viewName) {
+          btn.className = 'nav-tab px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors bg-once-accent text-slate-950';
+        } else {
+          btn.className = 'nav-tab px-2.5 py-1 rounded-lg text-xs font-medium transition-colors text-once-secondary hover:text-once-primary hover:bg-once-elevated';
+        }
+      });
+
+      // 更新右侧规格卡片
+      const spec = pageSpecs[viewName] || pageSpecs.landing;
+      document.getElementById('specPageBadge').textContent = spec.badge;
+      document.getElementById('specPageTitle').textContent = spec.title;
+      document.getElementById('specPageDesc').textContent = spec.desc;
+      const ul = document.getElementById('specSecurityList');
+      ul.innerHTML = '';
+      spec.bullets.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+
+      // 清理定时器
+      if (state.matchTimerId) {
+        clearInterval(state.matchTimerId);
+        state.matchTimerId = null;
+      }
+      if (state.chatTimerId) {
+        clearInterval(state.chatTimerId);
+        state.chatTimerId = null;
+      }
+
+      if (actualView === 'matching') {
+        state.matchWaitSec = 1;
+        document.getElementById('matchWaitTimer').textContent = '00:01';
+        document.getElementById('matchingPoolBadge').textContent = `${state.selectedDuration} 分钟对话池 · 文字 + 语音`;
+        document.getElementById('fallbackCard').classList.add('hidden');
+        state.matchTimerId = setInterval(() => {
+          state.matchWaitSec += 1;
+          document.getElementById('matchWaitTimer').textContent = formatTime(state.matchWaitSec);
+        }, 1000);
+      }
+
+      if (actualView === 'chat') {
+        if (typeof options.initialSec === 'number') {
+          state.chatRemainingSec = options.initialSec;
+        } else {
+          state.chatRemainingSec = state.selectedDuration * 60 - 18;
+        }
+        updateChatTimerUI();
+        state.chatTimerId = setInterval(() => {
+          state.chatRemainingSec -= 1;
+          if (state.chatRemainingSec <= 0) {
+            clearInterval(state.chatTimerId);
+            state.chatTimerId = null;
+            triggerFarewell('timeout');
+          } else {
+            updateChatTimerUI();
+          }
+        }, 1000);
+      }
+    }
+
+    function updateChatTimerUI() {
+      const timerEl = document.getElementById('chatCountdown');
+      const dotEl = document.getElementById('timerDot');
+      const bannerEl = document.getElementById('lastMinuteBanner');
+      const showAlertPref = document.getElementById('prefLastMinuteAlert').checked;
+
+      timerEl.textContent = formatTime(state.chatRemainingSec);
+
+      if (state.chatRemainingSec <= 15) {
+        timerEl.className = 'tabular-timer text-sm font-semibold text-once-critical';
+        dotEl.className = 'w-1.5 h-1.5 rounded-full bg-once-critical animate-ping';
+        if (showAlertPref) bannerEl.classList.remove('hidden');
+      } else if (state.chatRemainingSec <= 60) {
+        timerEl.className = 'tabular-timer text-sm font-semibold text-once-warn';
+        dotEl.className = 'w-1.5 h-1.5 rounded-full bg-once-warn animate-pulse';
+        if (showAlertPref) bannerEl.classList.remove('hidden');
+      } else {
+        timerEl.className = 'tabular-timer text-sm font-semibold text-once-calm';
+        dotEl.className = 'w-1.5 h-1.5 rounded-full bg-once-calm';
+        bannerEl.classList.add('hidden');
+      }
+    }
+
+    function triggerFarewell(reason) {
+      state.excludedCount += 1;
+      document.getElementById('excludedCountInline').textContent = String(state.excludedCount);
+      document.getElementById('safetyExcludedCount').textContent = `${state.excludedCount} 人`;
+
+      const titleEl = document.getElementById('farewellTitle');
+      const subEl = document.getElementById('farewellSubtitle');
+      const badgeEl = document.getElementById('farewellBadge');
+      const receipt1El = document.getElementById('farewellReceipt1');
+
+      if (reason === 'report') {
+        badgeEl.textContent = 'REPORT SUBMITTED & BLOCKED';
+        badgeEl.className = 'text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-once-critical/15 border border-once-critical/40 text-once-critical mb-2';
+        titleEl.textContent = '已提交举报并安全终止对话';
+        subEl.textContent = '我们已永久屏蔽该匿名对象。为配合安全核查，本房间证据已加密冻结，审核后将物理销毁。';
+        receipt1El.textContent = '当前会话上下文与涉事语音已加密冻结至安全隔离区（最长保留 14 天后销毁）';
+      } else if (reason === 'leave') {
+        badgeEl.textContent = 'ENDED BY YOU';
+        badgeEl.className = 'text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-once-elevated border border-once-border text-once-secondary mb-2';
+        titleEl.textContent = '你已提前结束本次对话';
+        subEl.textContent = '房间已立即关闭，全部文字与语音已清除，你们未来不会再次匹配。';
+        receipt1El.textContent = '房间内全部文字记录与语音文件已从活动库清除';
+      } else {
+        badgeEl.textContent = 'TIME EXPIRED · DISSOLVED';
+        badgeEl.className = 'text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-once-elevated border border-once-border text-once-secondary mb-2';
+        titleEl.textContent = `${state.selectedDuration} 分钟已尽，这段对话已随风消散`;
+        subEl.textContent = '感谢这一刻的坦诚交汇。按照 ONCE 的规则，你们不留联系方式，也不会再次相遇。';
+        receipt1El.textContent = '房间内全部文字记录与语音文件已从活动库清除';
+      }
+
+      switchView('farewell');
+    }
+
+    // 绑定顶部导航 Tab
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchView(btn.dataset.nav);
+      });
+    });
+
+    document.getElementById('appLogoBtn').addEventListener('click', () => switchView('landing'));
+    document.getElementById('openSafetyBtn').addEventListener('click', () => switchView('safety'));
+    document.getElementById('landingSafetyLink').addEventListener('click', () => switchView('safety'));
+    document.getElementById('backToLandingFromSafetyBtn').addEventListener('click', () => switchView('landing'));
+    document.getElementById('farewellToSafetyBtn').addEventListener('click', () => switchView('safety'));
+
+    // 绑定首页时长选择
+    document.querySelectorAll('.duration-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const min = Number(btn.dataset.duration);
+        state.selectedDuration = min;
+        document.querySelectorAll('.duration-btn').forEach(b => {
+          if (Number(b.dataset.duration) === min) {
+            b.className = 'duration-btn py-2.5 px-2 rounded-xl text-xs font-mono border border-once-accent bg-once-accent/15 text-once-primary font-semibold shadow-sm transition-all';
+          } else {
+            b.className = 'duration-btn py-2.5 px-2 rounded-xl text-xs font-mono border border-once-border bg-once-elevated/60 text-once-secondary hover:text-once-primary transition-all';
+          }
+        });
+        document.getElementById('durationHintText').textContent = min === 10 ? '默认 10 分钟' : `已选 ${min} 分钟`;
+        document.getElementById('startMatchBtnText').textContent = `开始随机匹配（${min} 分钟）`;
+      });
+    });
+
+    // 首页 -> 匹配页
+    document.getElementById('startMatchBtn').addEventListener('click', () => {
+      switchView('matching');
+    });
+
+    // 匹配页交互
+    document.getElementById('cancelMatchBtn').addEventListener('click', () => {
+      switchView('landing');
+    });
+    document.getElementById('simMatchSuccessBtn').addEventListener('click', () => {
+      switchView('chat');
+    });
+    document.getElementById('simFallbackPromptBtn').addEventListener('click', () => {
+      document.getElementById('fallbackCard').classList.remove('hidden');
+    });
+    document.getElementById('acceptFallbackBtn').addEventListener('click', () => {
+      state.selectedDuration = 10;
+      document.getElementById('matchingPoolBadge').textContent = '10 分钟对话池 · 文字 + 语音';
+      document.getElementById('fallbackCard').classList.add('hidden');
+    });
+    document.getElementById('dismissFallbackBtn').addEventListener('click', () => {
+      document.getElementById('fallbackCard').classList.add('hidden');
+    });
+
+    // 聊天页模拟时间按钮
+    document.querySelectorAll('.sim-time-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sec = Number(btn.dataset.simtime);
+        if (sec <= 0) {
+          triggerFarewell('timeout');
+        } else {
+          state.chatRemainingSec = sec;
+          updateChatTimerUI();
+        }
+      });
+    });
+
+    // 聊天发送文字消息
+    document.getElementById('chatForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const list = document.getElementById('chatMessageList');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex flex-col items-end ml-auto max-w-[82%]';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'px-3.5 py-2.5 rounded-2xl rounded-br-sm bg-once-accent/20 border border-once-accent/40 text-sm text-once-primary leading-relaxed break-words';
+      bubble.textContent = text;
+
+      const meta = document.createElement('span');
+      meta.className = 'text-[10px] font-mono text-once-muted mt-1 mr-1';
+      meta.textContent = '你 · 刚刚';
+
+      wrapper.appendChild(bubble);
+      wrapper.appendChild(meta);
+      list.appendChild(wrapper);
+      list.scrollTop = list.scrollHeight;
+      input.value = '';
+    });
+
+    // 语音播放切换
+    function bindVoicePlayButtons() {
+      document.querySelectorAll('.voice-play-btn').forEach(btn => {
+        btn.onclick = () => {
+          const vid = btn.dataset.voiceId;
+          const wave = document.getElementById(`wave-${vid}`);
+          if (state.playingVoiceId === vid) {
+            state.playingVoiceId = null;
+            btn.textContent = '▶';
+            if (wave) wave.classList.remove('wave-active');
+          } else {
+            state.playingVoiceId = vid;
+            btn.textContent = '❚❚';
+            if (wave) wave.classList.add('wave-active');
+            setTimeout(() => {
+              if (state.playingVoiceId === vid) {
+                state.playingVoiceId = null;
+                btn.textContent = '▶';
+                if (wave) wave.classList.remove('wave-active');
+              }
+            }, 3000);
+          }
+        };
+      });
+    }
+    bindVoicePlayButtons();
+
+    // 语音录制模拟
+    const voiceRecordBar = document.getElementById('voiceRecordBar');
+    document.getElementById('toggleVoiceRecordBtn').addEventListener('click', () => {
+      if (voiceRecordBar.classList.contains('hidden')) {
+        voiceRecordBar.classList.remove('hidden');
+        state.recordingSec = 1;
+        document.getElementById('recordSeconds').textContent = '0:01 / 0:60';
+        if (state.recordTimerId) clearInterval(state.recordTimerId);
+        state.recordTimerId = setInterval(() => {
+          state.recordingSec = Math.min(60, state.recordingSec + 1);
+          const s = String(state.recordingSec).padStart(2, '0');
+          document.getElementById('recordSeconds').textContent = `0:${s} / 0:60`;
+        }, 1000);
+      } else {
+        voiceRecordBar.classList.add('hidden');
+        if (state.recordTimerId) clearInterval(state.recordTimerId);
+      }
+    });
+
+    document.getElementById('cancelRecordBtn').addEventListener('click', () => {
+      voiceRecordBar.classList.add('hidden');
+      if (state.recordTimerId) clearInterval(state.recordTimerId);
+    });
+
+    document.getElementById('sendVoiceBtn').addEventListener('click', () => {
+      const dur = state.recordingSec || 4;
+      voiceRecordBar.classList.add('hidden');
+      if (state.recordTimerId) clearInterval(state.recordTimerId);
+
+      const vid = 'v_' + Date.now();
+      const list = document.getElementById('chatMessageList');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex flex-col items-end ml-auto max-w-[82%]';
+      wrapper.innerHTML = `
+        <div class="px-3.5 py-2.5 rounded-2xl rounded-br-sm bg-once-accent/20 border border-once-accent/40 flex items-center gap-3">
+          <button type="button" data-voice-id="${vid}" class="voice-play-btn w-8 h-8 rounded-full bg-once-accent text-slate-950 flex items-center justify-center text-xs font-mono">▶</button>
+          <div id="wave-${vid}" class="flex items-center gap-1 h-4">
+            <span class="w-1 h-2.5 bg-once-accent rounded-full"></span>
+            <span class="w-1 h-4 bg-once-accent rounded-full"></span>
+            <span class="w-1 h-3 bg-once-accent rounded-full"></span>
+            <span class="w-1 h-4 bg-once-accent rounded-full"></span>
+            <span class="w-1 h-2 bg-once-accent rounded-full"></span>
+          </div>
+          <span class="text-xs font-mono text-once-primary">0:${String(dur).padStart(2, '0')}</span>
+        </div>
+        <span class="text-[10px] font-mono text-once-muted mt-1 mr-1">你 · 语音消息（私有桶加密）</span>
+      `;
+      list.appendChild(wrapper);
+      list.scrollTop = list.scrollHeight;
+      bindVoicePlayButtons();
+    });
+
+    // 离开与举报模态框
+    document.getElementById('leaveChatBtn').addEventListener('click', () => {
+      triggerFarewell('leave');
+    });
+    document.getElementById('openReportModalBtn').addEventListener('click', () => {
+      document.getElementById('reportModal').classList.remove('hidden');
+    });
+    document.getElementById('closeReportModalBtn').addEventListener('click', () => {
+      document.getElementById('reportModal').classList.add('hidden');
+    });
+    document.getElementById('cancelReportBtn').addEventListener('click', () => {
+      document.getElementById('reportModal').classList.add('hidden');
+    });
+    document.getElementById('submitReportBtn').addEventListener('click', () => {
+      document.getElementById('reportModal').classList.add('hidden');
+      triggerFarewell('report');
+    });
+
+    // 告别页 -> 开启新的相遇
+    document.getElementById('newEncounterBtn').addEventListener('click', () => {
+      switchView('landing');
+    });
+
+    // 设置页：重置匿名身份凭证
+    document.getElementById('resetIdentityBtn').addEventListener('click', () => {
+      document.getElementById('resetConfirmBanner').classList.remove('hidden');
+    });
+    document.getElementById('cancelResetIdentityBtn').addEventListener('click', () => {
+      document.getElementById('resetConfirmBanner').classList.add('hidden');
+    });
+    document.getElementById('confirmResetIdentityBtn').addEventListener('click', () => {
+      const randHex = Math.floor(1000 + Math.random() * 9000).toString(16);
+      state.anonShortId = `once_${randHex}`;
+      state.anonFullMask = `once_${randHex}...a70f`;
+      state.excludedCount = 0;
+      document.getElementById('anonBadge').textContent = `ID: ${state.anonShortId}`;
+      document.getElementById('safetyAnonIdText').textContent = state.anonFullMask;
+      document.getElementById('safetyExcludedCount').textContent = '0 人';
+      document.getElementById('excludedCountInline').textContent = '0';
+      document.getElementById('resetConfirmBanner').classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
