@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  once-mysql:
+    image: mysql:8.0
+    container_name: once-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-once_root_secret_2026}
+      MYSQL_DATABASE: project_once
+    volumes:
+      - ./.mysql_data:/var/lib/mysql
+      - ./mysql/0001_init_once_mysql.sql:/docker-entrypoint-initdb.d/0001_init_once_mysql.sql:ro
+    # 安全加固：不向公网映射 3306 端口，仅允许同容器网络内的 once-web 访问
+
+  once-web:
+    build: .
+    container_name: once-web
+    restart: unless-stopped
+    depends_on:
+      - once-mysql
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      MYSQL_URL: mysql://root:${MYSQL_ROOT_PASSWORD:-once_root_secret_2026}@once-mysql:3306/project_once
+      ONCE_IDENTITY_HMAC_SECRET: ${ONCE_IDENTITY_HMAC_SECRET:-replace-with-strong-32-char-secret-key}
+    volumes:
+      - ./.private_storage:/app/.private_storage
