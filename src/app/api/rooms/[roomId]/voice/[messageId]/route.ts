@@ -54,7 +54,7 @@ export async function GET(
       );
     }
 
-    return new NextResponse(file.buffer, {
+    return new NextResponse(new Uint8Array(file.buffer), {
       status: 200,
       headers: {
         "Content-Type": file.contentType,
